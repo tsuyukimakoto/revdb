@@ -1,0 +1,92 @@
+package ${packageName};
+
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+import ${hbmPackage}.${table.className};
+
+public class ${table.className}Bean {
+#foreach($column in $table.columns)
+	$column.javaType ${column.javaName};
+#end
+
+	public ${table.className}Bean() {
+	}
+	
+	public ${table.className}Bean(${table.className} obj) {
+		//PK
+#if($table.hasPrimaryKey() == true)
+#if($table.isCompositPrimaryKey() == true)
+#foreach($clm in $pkColumns)
+		this.$clm.javaName = obj.getComp_id().get${clm.javaMethodName}();
+#end
+#else
+#foreach($clm in $pkColumns)
+		this.$clm.javaName = obj.get${clm.javaMethodName}();
+#end
+#end
+#end
+		//NOT PK
+#foreach($clm in $normalColumns)
+		this.$clm.javaName = obj.get${clm.javaMethodName}();
+#end
+	}
+
+#foreach($column in $table.columns)
+	public void set${column.javaMethodName}($column.javaType $column.javaName) {
+		this.$column.javaName = ${column.javaName};
+	}
+	public $column.javaType get${column.javaMethodName}() {
+		return this.${column.javaName};
+	}
+#end
+
+	public ${table.className} toDBModel() {
+		${table.className} obj = new ${table.className}();
+#if($table.hasPrimaryKey() == true)
+#if($table.isCompositPrimaryKey() == true)
+#foreach($clm in $pkColumns)
+		obj.getComp_id().set${clm.javaMethodName}(this.get${clm.javaMethodName}());
+#end
+#else
+#foreach($clm in $pkColumns)
+		obj.set${clm.javaMethodName}(this.get${clm.javaMethodName}());
+#end
+#end
+#end
+
+		//NOT PK
+#foreach($clm in $normalColumns)
+		obj.set${clm.javaMethodName}(this.get${clm.javaMethodName}());
+#end
+		return obj;
+	}		
+	public static List<${table.className}Bean> convertBeanList(List<${table.className}> list) {
+		List<${table.className}Bean> beanList = new ArrayList<${table.className}Bean>();
+		if(list.size() == 0) return beanList;
+		for(${table.className} obj: list) {
+			${table.className}Bean bean = new ${table.className}Bean();
+			//PK
+#if($table.hasPrimaryKey() == true)
+#if($table.isCompositPrimaryKey() == true)
+#foreach($clm in $pkColumns)
+			bean.set${clm.javaMethodName}(obj.getComp_id().get${clm.javaMethodName}());
+#end
+#else
+#foreach($clm in $pkColumns)
+			bean.set${clm.javaMethodName}(obj.get${clm.javaMethodName}());
+#end
+#end
+#end
+
+			//NOT PK
+#foreach($clm in $normalColumns)
+			bean.set${clm.javaMethodName}(obj.get${clm.javaMethodName}());
+#end
+
+			beanList.add(bean);
+		}
+		return beanList;
+	}
+}

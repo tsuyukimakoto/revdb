@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<class 
+    name="${hbmPackage}.${table.className}" 
+    table="${table.tableName}"
+>
+#if($table.hasPrimaryKey() == true)
+#if($table.isCompositPrimaryKey() == true)
+    <composite-id name="comp_id" class="${hbmPackage}.${table.className}PK">
+#foreach($clm in $pkColumns)
+        <key-property 
+            name="${clm.javaName}" 
+            column="${clm.columnName}" 
+            type="${clm.javaType}"
+        />
+#end
+    </composite-id>    
+#else
+#foreach($clm in $pkColumns)
+    <id
+        name="${clm.javaName}"
+        column="${clm.columnName}"
+        type="${clm.javaType}"
+    >
+#end
+#if($table.getModelType() == 1)
+        <generator class="sequence">
+            <param name="sequence">SEQ_${table.tableName}</param>
+        </generator>
+#end
+    </id>
+#end
+#end
+
+#foreach($clm in $normalColumns)
+#if($table.getModelType() == 2)
+#if($velocityCount == 1)
+    <id
+        name="${clm.javaName}"
+        column="${clm.columnName}"
+        type="${clm.javaType}"
+    />
+#else
+    <property
+        name="${clm.javaName}"
+        type="${clm.hbmType}"
+        column="${clm.columnName}"
+    />
+#end
+#end
+#end
+</class>
+</hibernate-mapping>

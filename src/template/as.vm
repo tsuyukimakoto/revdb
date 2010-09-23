@@ -1,0 +1,11 @@
+class ${asPackage}.${table.className}Bean
+{
+#foreach($column in $table.columns)
+	public var ${column.javaName}:${column.asType};
+#end
+
+  	public static var regClass = Object.registerClass("${packageName}.${table.className}", ${asPackage}.${table.className}Bean);
+	
+   	public function ${table.className}Bean() {
+   	}
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="flex.hibernate.generator" default="all" basedir="." >
+        <property name="main" value="./src" />
+        <property name="classdir" value="./classes" />
+        <property name="jarfile" value="./dist/FlexHibernateGenerator-0.1.jar" />
+
+        <!-- Set DefaultTarget -->
+        <target name="all" depends="compile,jar" />
+
+        <!-- Compile Target -->
+        <target name="compile">
+            <mkdir dir="${classdir}" />
+            <javac srcdir="${main}" destdir="${classdir}"
+             encoding="UTF-8" debug="no" />
+       </target>
+
+       <!-- jar Target -->
+       <target name="jar">
+            <jar basedir="${classdir}" jarfile="${jarfile}" />
+       </target>
+
+</project>
